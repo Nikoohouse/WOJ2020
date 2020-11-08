@@ -32,11 +32,22 @@ module.exports =
 
     },
 
-    fetchAll: function(req, res){
-        console.log("body = " + JSON.stringify(req.body));
-        console.log("params = " + JSON.stringify(req.query));
-        console.log(req.query.nimi);
-      res.send("Kutsuttiin fetchAll");
+    fetchAll: function(req, res) {
+      var nimi = "Kalle";
+      var sql = 'SELECT * FROM ASIAKAS WHERE 1=1'
+      sql = sql + " AND nimi like '" + nimi + "%'";
+      connection.query(sql, function(error, results, fields){
+        if ( error ){
+          console.log("virhe haettaessa dataa Asiakas-taulusta: " + error);
+          res.status(500);
+          res.json({"status" : "Ei toiminut"});
+        }
+        else
+        {
+        console.log("data = " + JSON.stringify(results));
+        res.json(results);
+        }
+      }); 
     },
 
     create: function(req, res){
@@ -51,4 +62,5 @@ module.exports =
     delete : function (req, res) {
         res.send("Kutsuttiin delete");
     }
+  
 }
