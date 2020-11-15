@@ -51,16 +51,50 @@ module.exports =
     },
 
     create: function(req, res){
-    
-      res.send("Kutsuttiin create");
+      var d = new Date();
+        var month = d.getUTCMonth() +1;
+        var day = d.getUTCDate();
+        var year = d.getUTCFullYear();
+        var newdate = year + "-" + month + "-" + day;
+      var sql = "INSERT INTO asiakas(nimi, osoite, postinro, postitmp, luontipvm, asty_avain) VALUES  (";
+      sql = sql + "'" + req.body.nimi + "'" + "," + "'" + req.body.osoite + "'" + "," + "'" + req.body.postinro + "'" + "," + "'" + req.body.postitmp + "'" + "," + "'" + newdate + "'" + "," + req.body.asty_avain + ")";
+      connection.query(sql, function(error, results, fields){
+        if ( error ){
+          console.log("Virhe lisättäessä asiakasta" + error);
+          res.status(400);
+          res.json("Jokin tieto puuttui, lisäys epäonnistui");
+        }
+        else {
+          console.log("data = " + JSON.stringify(req.body));
+          console.log(req.body.nimi);
+          res.send("Kutsuttiin create");
+        }
+
+      });
+     
+      
     },
 
     update: function(req, res){
 
     },
 
-    delete : function (req, res) {
-        res.send("Kutsuttiin delete");
+    delete : function (req, res) { 
+      var sql = "DELETE FROM asiakas WHERE avain="
+      sql = sql + "'" + req.params.id + "';";
+      connection.query(sql, function(error, results, fields){
+        if ( error ){
+          console.log("Virhe lisättäessä asiakasta" + error);
+          res.status(400);
+          res.json("Jokin tieto puuttui, lisäys epäonnistui");
+        }
+        else {
+          console.log("Body = " + JSON.stringify(req.body));
+          console.log("Params = " + JSON.stringify(req.params));
+            res.send("Kutsuttiin delete");
+        }
+      });
+      
     }
   
 }
